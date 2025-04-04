@@ -277,11 +277,15 @@ export default class Drawing extends Phaser.Scene {
 
     isPointerInsideGrid(x, y) {
         let { left, right, top, bottom } = this.backgroundGrid.getBounds();
+        let width = this.scale.width;
+        let height = this.scale.height;
+        let scaleFactorX = width < 500 ? 75 : width < 1000 ? 150 : 180;
+        let scaleFactorY = height < 500 ? 75 : height < 1000 ? 150 : 180;
         return (
-            x >= left + 200 &&
-            x <= right - 200 &&
-            y >= top + 200 && 
-            y <= bottom - 200
+            x >= left + scaleFactorX &&
+            x <= right - scaleFactorX &&
+            y >= top + scaleFactorY && 
+            y <= bottom - scaleFactorY
         );
     } 
 
