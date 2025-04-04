@@ -1,5 +1,6 @@
 import drawing from "./scenes/drawLevel.js";
 import Grid from "./scenes/gridLevel.js";
+import Extra from "./scenes/extraLevel.js";
 import mainMenu from "./scenes/mainMenu.js";
 const backgroundColour = "#224";
 const config = {
@@ -12,7 +13,7 @@ const config = {
     },
     backgroundColor: backgroundColour,
     scene: [
-        mainMenu, drawing, Grid
+        mainMenu, drawing, Grid, Extra
     ]
 };
 const game = new Phaser.Game(config);

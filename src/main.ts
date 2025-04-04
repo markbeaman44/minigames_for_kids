@@ -4,6 +4,7 @@ declare const Phaser: typeof import("phaser");
 
 import drawing from './scenes/drawLevel';
 import Grid from "./scenes/gridLevel";
+import Extra from "./scenes/extraLevel";
 import mainMenu from './scenes/mainMenu';
 
 const backgroundColour = "#224";
@@ -18,7 +19,7 @@ const config = {
     },
     backgroundColor: backgroundColour,
     scene: [
-        mainMenu, drawing, Grid
+        mainMenu, drawing, Grid, Extra
     ]
 };
 

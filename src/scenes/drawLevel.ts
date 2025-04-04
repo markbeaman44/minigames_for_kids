@@ -294,9 +294,8 @@ export default class Drawing extends Phaser.Scene {
         this.background.setScale(scaleX, scaleY);
         this.background.setPosition(width / 2, height / 2);
 
-        // Container height & width
-        let scaleFactorX = width < 1050 ? 1 : width < 1350 ? 1.2 : 1.4;
-        let scaleFactorY = height < 950 ? 1 : height < 1050 ? 1.1 : 1.2;
+        let scaleFactorX = width < 500 ? 0.45 : width < 600 ? 0.5 : width < 800 ? 0.6 : width < 1000 ? 0.7 : width < 1200 ? 0.8 : 1;
+        let scaleFactorY = height < 500 ? 0.45 : height < 600 ? 0.5 : height < 800 ? 0.6 : height < 1000 ? 0.7 : height < 1200 ? 0.8 : 1;
         this.containerGroup.setScale(scaleFactorX, scaleFactorY);
         this.containerGroup.setPosition(width / 2, height / 2);
 

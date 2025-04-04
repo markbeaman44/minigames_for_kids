@@ -28,7 +28,7 @@ export default class mainMenu extends Phaser.Scene {
             this.scene.start(`level2`);
         });
         let extra = this.baseUI.addInteractiveImage(0, 100, 'extra', 0.6, () => {
-            this.scene.start(`extra`);
+            this.scene.start(`levelExtra`);
         });
         this.containerGroup = this.add.container(this.scale.width / 2, this.scale.height / 2, [title, levelOne, levelTwo, extra]);
         this.resizeGame(this.scale.gameSize);
@@ -41,8 +41,9 @@ export default class mainMenu extends Phaser.Scene {
         let scaleY = height / this.background.height;
         this.background.setScale(scaleX, scaleY);
         this.background.setPosition(width / 2, height / 2);
-        let scaleFactor = width < 800 ? 0.9 : 1;
-        this.containerGroup.setScale(scaleFactor);
+        let scaleFactorX = width < 500 ? 0.45 : width < 600 ? 0.5 : width < 800 ? 0.6 : width < 1000 ? 0.7 : width < 1200 ? 0.8 : 1;
+        let scaleFactorY = height < 500 ? 0.45 : height < 600 ? 0.5 : height < 800 ? 0.6 : height < 1000 ? 0.7 : height < 1200 ? 0.8 : 1;
+        this.containerGroup.setScale(scaleFactorX, scaleFactorY);
         // Reposition Images within Group
         this.containerGroup.setPosition(width / 2, height / 2);
     }
