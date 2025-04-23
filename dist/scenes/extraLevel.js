@@ -17,6 +17,7 @@ export default class Extra extends Phaser.Scene {
         this.load.image('person_loads', 'assets/extra/person_loads.png');
         this.load.image('person_purple', 'assets/extra/person_purple.png');
         this.load.image('rabbit_purple', 'assets/extra/rabbit_purple.png');
+        this.load.image('boy', 'assets/extra/boy.png');
         this.input.setDefaultCursor('default');
     }
     create() {
@@ -33,6 +34,7 @@ export default class Extra extends Phaser.Scene {
             .on('pointerover', () => refreshText.setColor('#ff5555'))
             .on('pointerout', () => refreshText.setColor('#ffffff'))
             .on('pointerdown', () => { this.scene.restart(); });
+        let boy = this.add.image(0, -300, 'boy').setScale(0.5);
         let alienPurple = this.add.image(80, 100, 'alien_purple').setScale(0.18);
         let personPurple = this.add.image(180, 100, 'person_purple').setScale(0.18);
         let floatingFace = this.add.image(-600, -300, 'floating_face').setScale(0.3);
@@ -44,12 +46,13 @@ export default class Extra extends Phaser.Scene {
         let rabbitPurple = this.add.image(-150, 200, 'rabbit_purple').setScale(0.25);
         let personBrown = this.add.image(-260, -250, 'person_brown').setScale(0.2);
         let personBlue = this.add.image(50, -350, 'person_blue').setScale(0.1);
-        this.containerGroup = this.add.container(this.scale.width / 2, this.scale.height / 2, [homeButton, alienPurple, floatingFace, personBall, personBlack,
+        this.containerGroup = this.add.container(this.scale.width / 2, this.scale.height / 2, [boy, homeButton, alienPurple, floatingFace, personBall, personBlack,
             personFred, personGrey, personLoads,
             personPurple, rabbitPurple, personBlue, personBrown, refreshText]);
+        this.animateBounce(boy, 50, 5000);
         this.animateBounce(alienPurple, 250, 1000);
         this.animateBounce(personPurple, 300, 1200);
-        this.animateBounce(rabbitPurple, 200, 800);
+        this.animateBounce(rabbitPurple, 200, 3000);
         this.animateFlyAround(personBrown, 90);
         this.animateFlyAround(personBlue, 120);
         this.animateShake(floatingFace, 10, 2000);
@@ -135,25 +138,6 @@ export default class Extra extends Phaser.Scene {
             repeat: -1,
             duration: duration
         });
-    }
-    // go through all this to make extra level responsive
-    // just make my tablet and mobile size
-    // adjust containers only
-    // background stays the same - but on mobile it rotates or background will adjust port = width max height adjust - landscape = height max width adjust
-    // https://phaser.io/examples/v3/view/game/responsive/responsive-game
-    isTablet() {
-        let w = window.innerWidth;
-        let h = window.innerHeight;
-        return ((w > 768 && w <= 1280 && h > 600 && h <= 1366) || // Landscape tablet
-            (h > 768 && h <= 1280 && w > 600 && w <= 1366) // Portrait tablet
-        );
-    }
-    isMobile() {
-        let w = window.innerWidth;
-        let h = window.innerHeight;
-        return ((w <= 768 && h <= 1024) || // Landscape mobile
-            (h <= 768 && w <= 1024) // Portrait mobile
-        );
     }
     resizeGame(gameSize) {
         let { width, height } = gameSize;
