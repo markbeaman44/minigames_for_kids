@@ -15,7 +15,6 @@ export default class Drawing extends Phaser.Scene {
     }
     preload() {
         this.load.image('background1', 'assets/levelOne.png');
-        this.load.image('grid', 'assets/levelOneGrids.png');
         this.load.image('pencil', 'assets/pencilButton.png');
         this.load.image('bucket', 'assets/bucketButton.png');
         this.load.image('play', 'assets/playButton.png');
@@ -29,19 +28,18 @@ export default class Drawing extends Phaser.Scene {
         this.animationUI = new animationUI(this);
         this.background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background1')
             .disableInteractive();
-        this.backgroundGrid = this.add.image(0, -100, 'grid');
-        let pencilButton = this.baseUI.addInteractiveImage(-330, 300, 'pencil', 0.3, () => {
+        let pencilButton = this.baseUI.addInteractiveImage(-100, 360, 'pencil', 0.3, () => {
             this.bucketMode = false;
         });
-        let bucketButton = this.baseUI.addInteractiveImage(-330, 400, 'bucket', 0.3, () => {
+        let bucketButton = this.baseUI.addInteractiveImage(-200, 360, 'bucket', 0.3, () => {
             this.bucketMode = true;
             // option 2
             this.bucketFill();
         });
-        let playButton = this.baseUI.addInteractiveImage(330, 300, 'play', 0.3, () => {
+        let playButton = this.baseUI.addInteractiveImage(0, 360, 'play', 0.3, () => {
             this.animateDrawing();
         });
-        let clearButton = this.baseUI.addInteractiveImage(330, 400, 'clear', 0.3, () => {
+        let clearButton = this.baseUI.addInteractiveImage(100, 360, 'clear', 0.3, () => {
             this.graphics.clear();
             this.clearMe = true;
             // // option 1
@@ -49,11 +47,12 @@ export default class Drawing extends Phaser.Scene {
             // //
             this.bucketFill();
         });
-        let homeButton = this.baseUI.addInteractiveImage(400, -100, 'home', 0.3, () => {
+        let homeButton = this.baseUI.addInteractiveImage(200, 360, 'home', 0.3, () => {
             this.scene.start(`mainMenu`);
         });
-        this.containerGroup = this.add.container(this.scale.width / 2, this.scale.height / 2, [this.backgroundGrid, pencilButton, bucketButton, playButton, clearButton, homeButton]);
+        this.containerGroup = this.add.container(this.scale.width / 2, this.scale.height / 2, [pencilButton, bucketButton, playButton, clearButton, homeButton]);
         this.graphics = this.add.graphics();
+        this.backgroundGrid();
         this.gridSet();
         this.slider();
         this.input.on('pointerdown', (pointer) => {
@@ -97,6 +96,15 @@ export default class Drawing extends Phaser.Scene {
         this.resizeGame(this.scale.gameSize);
         this.scale.on("resize", this.resizeGame, this);
     }
+    backgroundGrid() {
+        const colorGridX = 0;
+        const colorGridY = -150;
+        const backgroundWidth = 1200;
+        const backgroundHeight = 850;
+        this.gridBorder = this.add.rectangle(colorGridX, colorGridY, backgroundWidth, backgroundHeight, 0xffffff)
+            .setStrokeStyle(4, 0x808080);
+        this.containerGroup.add(this.gridBorder);
+    }
     gridSet() {
         const colors = [
             0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff, 0x000000, 0xffffff, 0xff8800, 0x0088ff,
@@ -104,7 +112,7 @@ export default class Drawing extends Phaser.Scene {
             0xcc00cc, 0x00cccc, 0x444444, 0xaaaaaa, 0xff6666, 0x66ff66, 0x6666ff, 0xffff66, 0xff66ff, 0x66ffff
         ];
         const colorGridX = -275;
-        const colorGridY = 270;
+        const colorGridY = 420;
         const boxSize = 45;
         const padding = 10;
         const cols = 10;
@@ -123,13 +131,20 @@ export default class Drawing extends Phaser.Scene {
             let row = Math.floor(i / cols);
             let col = i % cols;
             let colorBox = this.add.rectangle(colorGridX + col * (boxSize + padding) + 27.5, colorGridY + row * (boxSize + padding) + 27.5, boxSize, boxSize, colors[i]).setInteractive().setStrokeStyle(2, 0x222222);
-            colorBox.on('pointerdown', () => this.currentColor = colors[i]);
+            colorBox.on('pointerover', () => { this.input.setDefaultCursor('pointer'); });
+            colorBox.on('pointerout', () => { this.input.setDefaultCursor('default'); });
+            colorBox.on('pointerdown', () => {
+                this.currentColor = colors[i];
+                if (this.sliderKnob) {
+                    this.sliderKnob.fillColor = this.currentColor;
+                }
+            });
             this.containerGroup.add(colorBox);
         }
     }
     slider() {
-        const sliderX = -400;
-        const sliderY = 20;
+        const sliderX = -350;
+        const sliderY = 430;
         const sliderWidth = 40;
         const sliderHeight = 150;
         const sliderPadding = 15;
@@ -141,14 +156,14 @@ export default class Drawing extends Phaser.Scene {
         sliderGraphics.fillRoundedRect(sliderX - sliderPadding / 2, sliderY - sliderPadding / 2, sliderWidth + sliderPadding, sliderHeight + sliderPadding, sliderCornerRadius);
         sliderGraphics.lineStyle(2, 0x222222);
         sliderGraphics.strokeRoundedRect(sliderX - sliderPadding / 2, sliderY - sliderPadding / 2, sliderWidth + sliderPadding, sliderHeight + sliderPadding, sliderCornerRadius);
-        let sliderKnob = this.add.rectangle(sliderX + 20, maxY, sliderWidth - 10, sliderWidth - 10, 0xffffff) // Draggable Knob
+        this.sliderKnob = this.add.rectangle(sliderX + 20, maxY, sliderWidth - 10, sliderWidth - 10, this.currentColor) // Draggable Knob
             .setInteractive({ draggable: true });
-        this.input.setDraggable(sliderKnob);
-        sliderKnob.on('drag', (pointer, dragX, dragY) => {
-            sliderKnob.y = Phaser.Math.Clamp(dragY, minY, maxY);
-            this.lineThickness = Phaser.Math.Linear(100, 1, (sliderKnob.y - minY) / (maxY - minY));
+        this.input.setDraggable(this.sliderKnob);
+        this.sliderKnob.on('drag', (pointer, dragX, dragY) => {
+            this.sliderKnob.y = Phaser.Math.Clamp(dragY, minY, maxY);
+            this.lineThickness = Phaser.Math.Linear(100, 1, (this.sliderKnob.y - minY) / (maxY - minY));
         });
-        this.containerGroup.add([sliderGraphics, sliderKnob]);
+        this.containerGroup.add([sliderGraphics, this.sliderKnob]);
     }
     bucketFill() {
         // Clear all previous fillGraphics and shapeGraphics
@@ -195,15 +210,11 @@ export default class Drawing extends Phaser.Scene {
         this.animationUI.applyRandomAnimation([this.graphics, ...this.fillGraphicsList, ...this.shapeGraphicsList], minX + width / 2, minY + height / 2);
     }
     isPointerInsideGrid(x, y) {
-        let { left, right, top, bottom } = this.backgroundGrid.getBounds();
-        let width = this.scale.width;
-        let height = this.scale.height;
-        let scaleFactorX = width < 500 ? 75 : width < 1000 ? 150 : 180;
-        let scaleFactorY = height < 500 ? 75 : height < 1000 ? 150 : 180;
-        return (x >= left + scaleFactorX &&
-            x <= right - scaleFactorX &&
-            y >= top + scaleFactorY &&
-            y <= bottom - scaleFactorY);
+        let { left, right, top, bottom } = this.gridBorder.getBounds();
+        return (x >= left &&
+            x <= right &&
+            y >= top &&
+            y <= bottom);
     }
     resizeGame(gameSize) {
         let { width, height } = gameSize;

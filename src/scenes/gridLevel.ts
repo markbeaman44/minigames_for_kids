@@ -10,7 +10,8 @@ export default class Grid extends Phaser.Scene {
     private animationUI!: animationUI;
     private graphics!: Phaser.GameObjects.Graphics;
     private background!: Phaser.GameObjects.Image;
-    private backgroundGrid!: Phaser.GameObjects.Image;
+    // private backgroundGrid!: Phaser.GameObjects.Image;
+    private gridBorder!: Phaser.GameObjects.Rectangle;
     private containerGroup!: Phaser.GameObjects.Container;
     private currentColor: any = 0x000000;
     private gridSize!: number;
@@ -34,33 +35,45 @@ export default class Grid extends Phaser.Scene {
 
         this.background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background2')
             .disableInteractive();
-        this.backgroundGrid = this.add.image(0, -100, 'grid2').setScale(0.9);
+        // this.backgroundGrid = this.add.image(0, -100, 'grid2').setScale(0.9);
 
-        this.gridSize = 10;
-        this.cellSize = 57.5;
-        this.grid = [];
-
-        let playButton = this.baseUI.addInteractiveImage(330, 300, 'play', 0.3, () => { 
+        let playButton = this.baseUI.addInteractiveImage(0, 360, 'play', 0.3, () => { 
             this.animateDrawing(); 
         });
 
-        let clearButton = this.baseUI.addInteractiveImage(330, 400, 'clear', 0.3, () => {
+        let clearButton = this.baseUI.addInteractiveImage(100, 360, 'clear', 0.3, () => {
             this.resetGrid();
         });
 
-        let homeButton = this.baseUI.addInteractiveImage(400, -100, 'home', 0.3, () => { 
+        let homeButton = this.baseUI.addInteractiveImage(200, 360, 'home', 0.3, () => { 
             this.scene.start(`mainMenu`);
         });
 
         this.containerGroup = this.add.container(this.scale.width / 2, this.scale.height / 2,
-            [ this.backgroundGrid, playButton, clearButton, homeButton ]);
+            [ playButton, clearButton, homeButton ]);
 
+        
+        this.graphics = this.add.graphics();
+        
+        this.backgroundGrid();
+        this.gridSetup();
+        this.gridSet();
+
+        this.resizeGame(this.scale.gameSize);
+        this.scale.on("resize", this.resizeGame, this);
+    }
+
+    gridSetup() {
         // Create grid inside the modal
+        this.gridSize = 15;
+        this.cellSize = 57.5;
+        this.grid = [];
+
         for (let row = 0; row < this.gridSize; row++) {
             this.grid[row] = [];
             for (let col = 0; col < this.gridSize; col++) {
-                let x = col * this.cellSize - 285;
-                let y = row * this.cellSize - 386.5;
+                let x = col * this.cellSize - 430;
+                let y = row * this.cellSize - 580;
 
                 let square = this.add.rectangle(x, y, this.cellSize - 2, this.cellSize - 2, 0xffffff).setOrigin(0).setDepth(1002);;
 
@@ -74,13 +87,18 @@ export default class Grid extends Phaser.Scene {
                 this.grid[row][col] = square;
             }
         }
+    }
 
-        this.graphics = this.add.graphics();
+    backgroundGrid() {
+        const colorGridX = 0;  
+        const colorGridY = -150; 
+        const backgroundWidth = 860;
+        const backgroundHeight = 860;
         
-        this.gridSet();
+        this.gridBorder = this.add.rectangle(colorGridX, colorGridY, backgroundWidth, backgroundHeight, 0xffffff)
+            .setStrokeStyle(4, 0x808080).setFillStyle(0xffffff, 0.2);
 
-        this.resizeGame(this.scale.gameSize);
-        this.scale.on("resize", this.resizeGame, this);
+        this.containerGroup.add(this.gridBorder);
     }
 
     gridSet() {
@@ -91,7 +109,7 @@ export default class Grid extends Phaser.Scene {
         ];
         
         const colorGridX = -275;  
-        const colorGridY = 270; 
+        const colorGridY = 420; 
         const boxSize = 45; 
         const padding = 10; 
         const cols = 10;
@@ -130,7 +148,9 @@ export default class Grid extends Phaser.Scene {
                 boxSize, boxSize,
                 colors[i]
             ).setInteractive().setStrokeStyle(2, 0x222222);
-        
+
+            colorBox.on('pointerover', () => { this.input.setDefaultCursor('pointer') })
+            colorBox.on('pointerout', () => { this.input.setDefaultCursor('default') })
             colorBox.on('pointerdown', () => this.currentColor = colors[i]);
             this.containerGroup.add(colorBox);
         }
