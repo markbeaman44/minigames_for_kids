@@ -139,8 +139,8 @@ export default class Grid extends Phaser.Scene {
         let scaleY = height / this.background.height;
         this.background.setScale(scaleX, scaleY);
         this.background.setPosition(width / 2, height / 2);
-        let scaleFactorX = width < 500 ? 0.45 : width < 600 ? 0.5 : width < 800 ? 0.6 : width < 1000 ? 0.7 : width < 1200 ? 0.8 : 1;
-        let scaleFactorY = height < 500 ? 0.45 : height < 600 ? 0.5 : height < 800 ? 0.6 : height < 1000 ? 0.7 : height < 1200 ? 0.8 : 1;
+        let scaleFactorX = width < 600 ? 0.4 : width < 700 ? 0.5 : width < 800 ? 0.6 : width < 1000 ? 0.7 : width < 1200 ? 0.8 : 1;
+        let scaleFactorY = height < 600 ? 0.4 : height < 700 ? 0.5 : height < 800 ? 0.6 : height < 1000 ? 0.7 : height < 1200 ? 0.8 : 1;
         this.containerGroup.setScale(scaleFactorX, scaleFactorY);
         // Reposition Images within Group
         this.containerGroup.setPosition(width / 2, height / 2);
