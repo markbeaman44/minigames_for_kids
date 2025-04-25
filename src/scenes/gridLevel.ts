@@ -1,6 +1,6 @@
 import baseUI from './baseUI';
 import animationUI from './animationUI';
-import * as helpers from '../scenes/helper';
+import * as helpers from './helper';
 
 export default class Grid extends Phaser.Scene {
     constructor() {

@@ -1,5 +1,5 @@
 import baseUI from "./baseUI.js";
-import * as helpers from '../scenes/helper';
+import * as helpers from "./helper.js";
 export default class mainMenu extends Phaser.Scene {
     constructor() {
         super({ key: 'mainMenu' });
