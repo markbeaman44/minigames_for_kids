@@ -1,8 +1,9 @@
 import drawing from "./scenes/drawLevel.js";
 import Grid from "./scenes/gridLevel.js";
+import Balloon from "./scenes/balloonLevel.js";
 import Extra from "./scenes/extraLevel.js";
 import mainMenu from "./scenes/mainMenu.js";
-const backgroundColour = "#224";
+const backgroundColour = "#f5c08e";
 const config = {
     type: Phaser.AUTO,
     scale: {
@@ -12,8 +13,9 @@ const config = {
         height: window.innerHeight,
     },
     backgroundColor: backgroundColour,
+    physics: { default: 'arcade' },
     scene: [
-        mainMenu, drawing, Grid, Extra
+        mainMenu, drawing, Grid, Balloon, Extra
     ]
 };
 const game = new Phaser.Game(config);

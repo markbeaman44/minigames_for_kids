@@ -34,7 +34,7 @@ export default class Extra extends Phaser.Scene {
             .on('pointerover', () => refreshText.setColor('#ff5555'))
             .on('pointerout', () => refreshText.setColor('#ffffff'))
             .on('pointerdown', () => { this.scene.restart(); });
-        let boy = this.add.image(0, -300, 'boy').setScale(0.5);
+        let boy = this.add.image(0, -300, 'boy').setScale(0.3);
         let alienPurple = this.add.image(80, 100, 'alien_purple').setScale(0.18);
         let personPurple = this.add.image(180, 100, 'person_purple').setScale(0.18);
         let floatingFace = this.add.image(-600, -300, 'floating_face').setScale(0.3);

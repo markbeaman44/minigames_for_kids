@@ -4,10 +4,11 @@ declare const Phaser: typeof import("phaser");
 
 import drawing from './scenes/drawLevel';
 import Grid from "./scenes/gridLevel";
+import Balloon from "./scenes/balloonLevel";
 import Extra from "./scenes/extraLevel";
 import mainMenu from './scenes/mainMenu';
 
-const backgroundColour = "#224";
+const backgroundColour = "#f5c08e";
 
 const config = {
     type: Phaser.AUTO,
@@ -18,8 +19,9 @@ const config = {
         height: window.innerHeight,
     },
     backgroundColor: backgroundColour,
+    physics: { default: 'arcade' },
     scene: [
-        mainMenu, drawing, Grid, Extra
+        mainMenu, drawing, Grid, Balloon, Extra
     ]
 };
 
