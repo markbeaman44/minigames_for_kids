@@ -1,5 +1,5 @@
 import baseUI from './baseUI';
-import * as helpers from '../scenes/helper';
+import * as helpers from './helper';
 
 export default class mainMenu extends Phaser.Scene {
     constructor() {
