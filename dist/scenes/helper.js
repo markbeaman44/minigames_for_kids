@@ -26,7 +26,11 @@ export function getScreenSize(width, height) {
         scaleFactorX = 0.5;
         scaleFactorY = 0.48;
     }
-    else if (width >= 1150 && width < 1250 && height < 1000) {
+    else if (width >= 1150 && width < 1250 && height < 800) {
+        scaleFactorX = 0.6;
+        scaleFactorY = 0.5;
+    }
+    else if (width >= 1150 && width < 1250 && height >= 800 && height < 1000) {
         scaleFactorX = 0.7;
         scaleFactorY = 0.65;
     }

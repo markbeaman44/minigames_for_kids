@@ -23,7 +23,10 @@ export function getScreenSize(width: number, height: number) {
         } else if (width >= 1050 && width < 1150 && height < 1000) {
             scaleFactorX = 0.5;
             scaleFactorY = 0.48;
-        } else if (width >= 1150 && width < 1250 && height < 1000) {
+        } else if (width >= 1150 && width < 1250 && height < 800) {
+            scaleFactorX = 0.6;
+            scaleFactorY = 0.5;
+        } else if (width >= 1150 && width < 1250 && height >= 800 && height < 1000) {
             scaleFactorX = 0.7;
             scaleFactorY = 0.65;
         } else if (width >= 1250 && width < 1350 && height < 1000) {
