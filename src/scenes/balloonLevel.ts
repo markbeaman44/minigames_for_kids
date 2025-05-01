@@ -153,15 +153,14 @@ export default class Drawing extends Phaser.Scene {
             objectList.push(objectPicked);
             const balloonEmoji = this.add.text(0, 0, '🎈', {
                 fontSize: '180px',
+                fontFamily: 'monospace',
                 padding: { top: 30, bottom: 30 }
-            });
-            const animalLabel = this.add.text(70, 80, objectPicked, {
+            }).setOrigin(0.5, 0.5);
+            const animalLabel = this.add.text(0, 80, objectPicked, {
                 fontSize: '90px',
+                fontFamily: 'monospace',
                 padding: { top: 30, bottom: 30 }
-            })
-                .setOrigin(0.5, 0.5)
-                .setFontFamily('Arial')
-                .setPosition(balloonWidth / 2 + 20, balloonHeight / 2 - 10);
+            }).setOrigin(0.5, 0.5).setPosition(-20, -25);
             
             // Create container with both
             const balloon = this.add.container(x, y, [balloonEmoji, animalLabel]).setSize(balloonWidth, balloonHeight);
