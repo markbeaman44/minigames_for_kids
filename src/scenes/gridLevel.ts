@@ -38,15 +38,15 @@ export default class Grid extends Phaser.Scene {
             .disableInteractive();
         // this.backgroundGrid = this.add.image(0, -100, 'grid2').setScale(0.9);
 
-        let playButton = this.baseUI.addInteractiveImage(0, 360, 'play', 0.3, () => { 
+        let playButton = this.baseUI.addInteractiveImage(0, 335, 'play', 0.3, () => { 
             this.animateDrawing(); 
         });
 
-        let clearButton = this.baseUI.addInteractiveImage(100, 360, 'clear', 0.3, () => {
+        let clearButton = this.baseUI.addInteractiveImage(100, 335, 'clear', 0.3, () => {
             this.resetGrid();
         });
 
-        let homeButton = this.baseUI.addInteractiveImage(200, 360, 'home', 0.3, () => { 
+        let homeButton = this.baseUI.addInteractiveImage(200, 335, 'home', 0.3, () => { 
             this.scene.start(`mainMenu`);
         });
 
@@ -110,7 +110,7 @@ export default class Grid extends Phaser.Scene {
         ];
         
         const colorGridX = -275;  
-        const colorGridY = 420; 
+        const colorGridY = 395; 
         const boxSize = 45; 
         const padding = 10; 
         const cols = 10;
