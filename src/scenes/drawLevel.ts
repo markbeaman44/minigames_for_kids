@@ -42,21 +42,21 @@ export default class Drawing extends Phaser.Scene {
         this.background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'background1')
             .disableInteractive();
 
-        let pencilButton = this.baseUI.addInteractiveImage(-100, 360, 'pencil', 0.3, () => {
+        let pencilButton = this.baseUI.addInteractiveImage(-100, 335, 'pencil', 0.3, () => {
             this.bucketMode = false;
         });
 
-        let bucketButton = this.baseUI.addInteractiveImage(-200, 360, 'bucket', 0.3, () => {
+        let bucketButton = this.baseUI.addInteractiveImage(-200, 335, 'bucket', 0.3, () => {
             this.bucketMode = true;
             // option 2
             this.bucketFill();
         });
 
-        let playButton = this.baseUI.addInteractiveImage(0, 360, 'play', 0.3, () => { 
+        let playButton = this.baseUI.addInteractiveImage(0, 335, 'play', 0.3, () => { 
             this.animateDrawing(); 
         });
 
-        let clearButton = this.baseUI.addInteractiveImage(100, 360, 'clear', 0.3, () => {
+        let clearButton = this.baseUI.addInteractiveImage(100, 335, 'clear', 0.3, () => {
             this.graphics.clear();
             this.clearMe = true;
             // // option 1
@@ -65,7 +65,7 @@ export default class Drawing extends Phaser.Scene {
             this.bucketFill();
         });
 
-        let homeButton = this.baseUI.addInteractiveImage(200, 360, 'home', 0.3, () => { 
+        let homeButton = this.baseUI.addInteractiveImage(200, 335, 'home', 0.3, () => { 
             this.scene.start(`mainMenu`);
         });
 
@@ -142,7 +142,7 @@ export default class Drawing extends Phaser.Scene {
         ];
         
         const colorGridX = -275;  
-        const colorGridY = 420; 
+        const colorGridY = 395; 
         const boxSize = 45; 
         const padding = 10; 
         const cols = 10;
@@ -197,7 +197,7 @@ export default class Drawing extends Phaser.Scene {
 
     slider() {
         const sliderX = -350;
-        const sliderY = 430; 
+        const sliderY = 405; 
         const sliderWidth = 40; 
         const sliderHeight = 150; 
         const sliderPadding = 15;

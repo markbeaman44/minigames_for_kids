@@ -126,7 +126,10 @@ export default class Drawing extends Phaser.Scene {
             const animalLabel = this.add.text(70, 80, objectPicked, {
                 fontSize: '90px',
                 padding: { top: 30, bottom: 30 }
-            }).setOrigin(0.5);
+            })
+                .setOrigin(0.5, 0.5)
+                .setFontFamily('Arial')
+                .setPosition(balloonWidth / 2 + 20, balloonHeight / 2 - 10);
             // Create container with both
             const balloon = this.add.container(x, y, [balloonEmoji, animalLabel]).setSize(balloonWidth, balloonHeight);
             this.physics.add.existing(balloon);
