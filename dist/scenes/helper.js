@@ -18,7 +18,7 @@ export function getScreenSize(width, height) {
         scaleFactorY = 0.5;
     }
     // Landscape
-    else if (width < 1050 && height < 800) {
+    else if (width < 1050 && height < 750) {
         scaleFactorX = 0.5;
         scaleFactorY = 0.45;
     }
@@ -26,7 +26,7 @@ export function getScreenSize(width, height) {
         scaleFactorX = 0.5;
         scaleFactorY = 0.48;
     }
-    else if (width >= 1150 && width < 1250 && height < 800) {
+    else if (width >= 1150 && width < 1250 && height < 750) {
         scaleFactorX = 0.6;
         scaleFactorY = 0.5;
     }
@@ -34,7 +34,15 @@ export function getScreenSize(width, height) {
         scaleFactorX = 0.7;
         scaleFactorY = 0.65;
     }
-    else if (width >= 1250 && width < 1350 && height < 1000) {
+    else if (width >= 1250 && width < 1350 && height < 750) {
+        scaleFactorX = 0.65;
+        scaleFactorY = 0.55;
+    }
+    else if (width >= 1250 && width < 1350 && height >= 750 && height < 1000) {
+        scaleFactorX = 0.75;
+        scaleFactorY = 0.65;
+    }
+    else if (width >= 1350 && width < 1550 && height >= 750 && height < 1100) {
         scaleFactorX = 0.75;
         scaleFactorY = 0.65;
     }
