@@ -1,141 +1,187 @@
+import baseUI from "./baseUI.js";
+import * as helpers from "./helper.js";
 export default class Drawing extends Phaser.Scene {
     constructor() {
         super({ key: 'level3' });
-        // private baseUI!: baseUI;
-        // private animationUI!: animationUI;
-        // private graphics!: Phaser.GameObjects.Graphics;
-        // private background!: Phaser.GameObjects.Image;
-        // private gridBorder!: Phaser.GameObjects.Rectangle;
-        // private containerGroup!: Phaser.GameObjects.Container;
-        // private drawing: boolean = false;
-        // private points: { x: number; y: number }[] = [];
-        // private currentColor: number = 0x000000;
-        // private lineThickness: number = 5;
-        // private bucketMode: boolean = false;
-        // private clearMe: boolean = false;
-        // private justCleared: boolean = false;
-        // private fillGraphicsList: Phaser.GameObjects.Graphics[] = [];
-        // private shapeGraphicsList: Phaser.GameObjects.Graphics[] = [];
-        // private sliderKnob!: Phaser.GameObjects.Rectangle;
-        this.animals = [
-            // Farm animals
-            "🐄",
-            "🐖",
-            "🐑",
-            "🐓",
-            "🐎",
-            "🐐",
-            "🦃",
-            "🦆",
-            "🐇",
-            "🐕",
-            "🐈",
-            // Wild animals
-            "🦁",
-            "🐘",
-            "🦒",
-            "🦓",
-            "🦏",
-            "🐅",
-            "🐆",
-            "🦬",
-            "🦘",
-            // Forest animals
-            "🦊",
-            "🐿️",
-            "🦔",
-            "🦡",
-            "🦝",
-            "🐺",
-            "🦌",
-            // Sea creatures
-            "🐬",
-            "🐳",
-            "🦭",
-            "🐙",
-            "🦑",
-            "🦐",
-            "🦞",
-            "🐠",
-            "🐡",
-            "🦈",
-            // Insects
-            "🦋",
-            "🐝",
-            "🐞",
-            "🦗",
-            "🐜",
+        this.animals = helpers.animals;
+        this.objects = helpers.objects;
+        this.everydayObjects = helpers.everydayObjects;
+        this.food = helpers.food;
+        this.sports = helpers.sports;
+        this.allObjects = [
+            {
+                name: 'Animals',
+                emojis: this.animals
+            },
+            {
+                name: 'Assets',
+                emojis: this.objects
+            },
+            {
+                name: 'Items',
+                emojis: this.everydayObjects
+            },
+            {
+                name: 'Food',
+                emojis: this.food
+            },
+            {
+                name: 'Sports',
+                emojis: this.sports
+            }
         ];
-        this.currentAnimal = '';
-        this.totalBalloons = 5;
+        this.currentObject = '';
+        this.totalBalloons = 2;
+        this.score = 0;
+        this.timeLeft = 60;
     }
     preload() {
+        this.load.image('home', 'assets/homeButton.png');
+        this.load.image('backgroundBalloon', 'assets/levelThree.png');
         this.input.setDefaultCursor('default');
     }
     create() {
+        this.baseUI = new baseUI(this, "18px");
         this.balloonGroup = this.add.group();
-        this.targetText = this.add.text(400, 20, '', {
-            fontSize: '28px',
+        this.pickedObjects = this.allObjects[Phaser.Math.Between(0, this.allObjects.length - 1)];
+        this.background = this.add.image(this.scale.width / 2, this.scale.height / 2, 'backgroundBalloon')
+            .disableInteractive();
+        this.targetText = this.add.text(-200, -500, '', {
+            fontSize: '164px',
+            padding: { x: 15, y: 15 }
+        }).setOrigin(0.5).setDepth(1);
+        this.targetSentence = this.add.text(this.targetText.x + 30, this.targetText.y, `Find:            in ${this.pickedObjects.name}`, {
+            fontSize: '32px',
             color: '#000',
-            backgroundColor: '#fff',
-            padding: { x: 10, y: 5 }
         }).setOrigin(0.5);
-        this.startRound();
-        this.input.on('gameobjectdown', (pointer, gameObject) => {
-            if (gameObject.animal === this.currentAnimal) {
-                this.totalBalloons++;
-            }
-            else {
-                this.totalBalloons = 5;
-            }
-            this.balloonGroup.clear(true, true);
-            this.startRound();
+        this.scoreText = this.add.text(this.targetText.x + 382, this.targetText.y - 20, `Score: ${this.score}`, {
+            fontSize: '32px',
+            color: '#000',
+        }).setOrigin(0.5);
+        this.timerText = this.add.text(this.targetText.x + 382, this.targetText.y + 30, `Time: ${this.timeLeft}`, {
+            fontSize: '32px',
+            color: '#000',
+        }).setOrigin(0.5);
+        let homeButton = this.baseUI.addInteractiveImage(this.targetText.x + 550, this.targetText.y, 'home', 0.3, () => {
+            this.scene.start(`mainMenu`);
+            this.score = 0;
+            this.totalBalloons = 2;
         });
+        this.containerGroup = this.add.container(this.scale.width / 2, this.scale.height / 2, [this.targetText, this.targetSentence, this.scoreText, this.timerText, homeButton]);
+        this.startRound();
+        this.startTimer();
+        this.input.on('pointerdown', (pointer) => {
+            // Iterate in reverse to check topmost object first
+            const balloons = [...this.balloonGroup.getChildren()].reverse();
+            for (let balloon of balloons) {
+                const bounds = balloon.getBounds();
+                if (Phaser.Geom.Rectangle.Contains(bounds, pointer.x, pointer.y)) {
+                    const objectClicked = balloon.getData('object');
+                    console.log(`Clicked: ${objectClicked}`);
+                    console.log(`Current: ${this.currentObject}`);
+                    if (objectClicked === this.currentObject) {
+                        this.score++;
+                        this.totalBalloons++;
+                        if (this.score > 10) {
+                            this.totalBalloons = 2;
+                            this.score = 0;
+                            this.pickedObjects = this.allObjects[Phaser.Math.Between(0, this.allObjects.length - 1)];
+                            this.startTimer();
+                        }
+                    }
+                    else {
+                        this.score = 0;
+                        this.totalBalloons = 2;
+                    }
+                    this.updateScoreText();
+                    this.balloonGroup.clear(true, true);
+                    this.startRound();
+                    break;
+                }
+            }
+        });
+        this.resizeGame(this.scale.gameSize);
+        this.scale.on("resize", this.resizeGame, this);
     }
     startRound() {
-        this.currentAnimal = Phaser.Utils.Array.GetRandom(this.animals);
-        this.targetText.setText(`Find: ${this.currentAnimal}`);
+        const balloonWidth = 110;
+        const balloonHeight = 180;
+        const screenWidth = this.scale.width;
+        const spacing = screenWidth / this.totalBalloons;
         this.physics.add.collider(this.balloonGroup, this.balloonGroup);
+        this.physics.world.setBounds(0, 100, this.scale.width, this.scale.height - 200);
+        let objectList = [];
+        const availableObjects = Phaser.Utils.Array.Shuffle(this.pickedObjects.emojis.slice());
         for (let i = 0; i < this.totalBalloons; i++) {
-            const x = Phaser.Math.Between(50, 750);
-            const y = 150;
-            const speed = Phaser.Math.Between(20, 100);
-            const animal = Phaser.Utils.Array.GetRandom(this.animals);
+            const baseX = spacing * i + spacing / 2;
+            const calcWidthSize = this.scale.width < 600 ? 200 : 800;
+            const x = Phaser.Math.Clamp(baseX + Phaser.Math.Between(-20, 20), balloonWidth / 2, screenWidth - balloonWidth / 2) - calcWidthSize;
+            const y = Phaser.Math.Between(100, 200) - 600;
+            const objectPicked = availableObjects.pop();
+            objectList.push(objectPicked);
             const balloonEmoji = this.add.text(0, 0, '🎈', {
                 fontSize: '180px',
                 padding: { top: 30, bottom: 30 }
             });
-            const animalLabel = this.add.text(70, 80, animal, {
+            const animalLabel = this.add.text(70, 80, objectPicked, {
                 fontSize: '90px',
                 padding: { top: 30, bottom: 30 }
             }).setOrigin(0.5);
             // Create container with both
-            const balloon = this.add.container(x, y, [balloonEmoji, animalLabel]).setSize(180, 250);
+            const balloon = this.add.container(x, y, [balloonEmoji, animalLabel]).setSize(balloonWidth, balloonHeight);
             this.physics.add.existing(balloon);
             const bBody = balloon.body;
-            bBody.setVelocityY(speed);
+            bBody.setVelocityY(Phaser.Math.Between(20, 100));
             bBody.setVelocityX(Phaser.Math.Between(-50, 50));
             bBody.setBounce(1);
             bBody.setCollideWorldBounds(true);
-            balloon.setInteractive(new Phaser.Geom.Rectangle(0, 0, 180, 250), Phaser.Geom.Rectangle.Contains);
-            balloon.setData('animal', animal);
+            balloon.setInteractive(new Phaser.Geom.Rectangle(0, 0, balloonWidth, balloonHeight), Phaser.Geom.Rectangle.Contains);
+            balloon.setData('object', objectPicked);
             // Add to group
             this.balloonGroup.add(balloon);
-            // this.tweens.add({
-            //     targets: balloon,
-            //     y: 600,
-            //     duration: 20000,
-            //     onUpdate: () => {
-            //         const label = balloon.getData('text');
-            //         if (label) label.y = balloon.y;
-            //     },
-            //     onComplete: () => {
-            //         // Reset game on miss
-            //         this.totalBalloons = 5;
-            //         this.balloonGroup.clear(true, true);
-            //         this.startRound.call(this);
-            //     }
-            // });
+            this.containerGroup.add(balloon);
         }
+        this.currentObject = Phaser.Utils.Array.GetRandom(objectList);
+        this.targetText.setText(this.currentObject);
+    }
+    updateScoreText() {
+        this.scoreText.setText(`Score: ${this.score}`);
+    }
+    startTimer() {
+        if (this.timerEvent)
+            this.timerEvent.remove(false); // clear previous
+        this.timeLeft = 60;
+        this.timerText.setText(`Time: ${this.timeLeft}`);
+        this.timerEvent = this.time.addEvent({
+            delay: 1000,
+            loop: true,
+            callback: () => {
+                this.timeLeft--;
+                this.timerText.setText(`Time: ${this.timeLeft}`);
+                if (this.timeLeft <= 0) {
+                    this.timerEvent.remove(false);
+                    this.resetGame();
+                }
+            }
+        });
+    }
+    resetGame() {
+        this.score = 0;
+        this.totalBalloons = 2;
+        this.updateScoreText();
+        this.balloonGroup.clear(true, true);
+        this.startTimer();
+        this.startRound();
+    }
+    resizeGame(gameSize) {
+        let { width, height } = gameSize;
+        // Background
+        let scaleX = width / this.background.width;
+        let scaleY = height / this.background.height;
+        this.background.setScale(scaleX, scaleY);
+        this.background.setPosition(width / 2, height / 2);
+        let { scaleFactorX, scaleFactorY } = helpers.getScreenSize(width, height);
+        this.containerGroup.setScale(scaleFactorX, scaleFactorY);
+        this.containerGroup.setPosition(width / 2, height / 2);
     }
 }
